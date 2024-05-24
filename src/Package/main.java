@@ -9,8 +9,9 @@ public class main {
     public static void main(String[] args) {
         Scanner teclado = new Scanner(System.in);
         int maxIntentos = 5;
+        boolean jugar = true;
 
-        while (true){
+        while (jugar){
             System.out.println("Ingrese su nombre:");
             String nombreJugador = teclado.nextLine();
 
@@ -19,41 +20,37 @@ public class main {
             Set<Character> letrasAdivinadas = new HashSet<>();
             Set<Character> letrasErradas = new HashSet<>();
 
-            while (intentosRestantes > 0){
+            while (intentosRestantes > 0 && jugar){
                 System.out.println("Ingrese una letra:");
                 char letra = teclado.nextLine().toLowerCase().charAt(0);
 
                 if (palabraAdivinar.indexOf(letra) >= 0){
-                    System.out.println("Ingrese otra letra:");
-                    letra = teclado.nextLine().toLowerCase().charAt(0);
-
-                    if (palabraAdivinar.indexOf(letra) >= 0){
-                        letrasAdivinadas.add(letra);
-                    }
-
-                    if (todasLetrasAdivinadas(palabraAdivinar, letrasAdivinadas)){
-                        System.out.println("Ganaste" + palabraAdivinar);
-                        int puntaje = maxIntentos - letrasErradas.size();
-                        break;
-                    }
+                    letrasAdivinadas.add(letra);
                 } else {
                     letrasErradas.add(letra);
                     intentosRestantes--;
                 }
 
-                if (intentosRestantes == 0){
-                    System.out.println("Perdiste, la palabra era " + palabraAdivinar);
-                    System.out.println("Intenta salvar el juego.");
-                    System.out.println("Ingrese las coordenadas x, y");
-                    int x = teclado.nextInt();
-                    int y = teclado.nextInt();
+                if (todasLetrasAdivinadas(palabraAdivinar, letrasAdivinadas)){
+                    System.out.println("Ganaste "+ nombreJugador +", la palabra era: " + palabraAdivinar);
+                    int puntaje = maxIntentos - letrasErradas.size();
+                    jugar = false;
+                }
+            }
 
-                    if (salvarAhorcado(x, y)){
-                        System.out.println("Lo has salvado, ganaste");
-                    } else {
-                        System.out.println("Perdiste");
-                        break;
-                    }
+            if (intentosRestantes == 0){
+                System.out.println("Perdiste, la palabra era " + palabraAdivinar);
+                System.out.println("Intenta salvar el juego.");
+                System.out.println("Ingrese las coordenadas x, y");
+                int x = teclado.nextInt();
+                int y = teclado.nextInt();
+
+                if (salvarAhorcado(x, y)){
+                    System.out.println("Lo has salvado, ganaste");
+                    jugar = false;
+                } else {
+                    System.out.println("Perdiste");
+                    jugar = false;
                 }
             }
         }
